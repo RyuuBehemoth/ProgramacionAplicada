@@ -1,0 +1,1 @@
+A continuacion se adjuntan los links de google drive que corresponden a las tareas hechas en google colab sobre perceptron, numpy y matplotlib

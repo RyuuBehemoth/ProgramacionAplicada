@@ -1,0 +1,47 @@
+#include <WiFi.h>
+#include "ThingSpeak.h"
+
+const char* ssid = "BARON";
+const char* password = "MUNECA83";
+
+// Tu clave API de escritura de ThingSpeak
+unsigned long channelID = 3000574;
+const char* writeAPIKey = "6GVAQMM7L1GK07VD";
+
+// Pin del potenciómetro
+const int potPin = 34;
+
+WiFiClient client;
+
+void setup() {
+  Serial.begin(115200);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Conectando a WiFi...");
+  }
+
+  Serial.println("Conectado a WiFi");
+
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+  int valorADC = analogRead(potPin);
+  Serial.print("Valor ADC: ");
+  Serial.println(valorADC);
+
+  // Enviar el dato al campo 1 de tu canal
+  ThingSpeak.setField(1, valorADC);
+  int status = ThingSpeak.writeFields(channelID, writeAPIKey);
+
+  if (status == 200) {
+    Serial.println("Dato enviado correctamente.");
+  } else {
+    Serial.print("Error al enviar: ");
+    Serial.println(status);
+  }
+
+  delay(15000); // ThingSpeak permite 1 dato cada 15 segundos en cuentas gratuitas
+}
